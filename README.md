@@ -96,7 +96,7 @@ Rule "role_type_check" (root/iam_user_deny:9:1) = false
 
 The federation_token is generated.
 
-```basg
+```bash
 vault write aws/roles/sts-role \
     credential_type=federation_token \
     policy_document=-<<EOF
