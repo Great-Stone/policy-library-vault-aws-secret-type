@@ -1,0 +1,1 @@
+# policy-library-vault-aws-secret-type
