@@ -1,0 +1,344 @@
+terraform_version = "1.9.5"
+
+planned_values = {
+	"outputs": {},
+	"resources": {
+		"vault_aws_secret_backend.aws": {
+			"address":        "vault_aws_secret_backend.aws",
+			"depends_on":     [],
+			"deposed_key":    "",
+			"index":          null,
+			"mode":           "managed",
+			"module_address": "",
+			"name":           "aws",
+			"provider_name":  "registry.terraform.io/hashicorp/vault",
+			"tainted":        false,
+			"type":           "vault_aws_secret_backend",
+			"values": {
+				"access_key":              "REDACTED_SENSITIVE",
+				"description":             null,
+				"disable_remount":         false,
+				"iam_endpoint":            null,
+				"identity_token_audience": null,
+				"identity_token_key":      null,
+				"local":                   false,
+				"namespace":               null,
+				"path":                    "aws",
+				"role_arn":                null,
+				"secret_key":              "REDACTED_SENSITIVE",
+				"sts_endpoint":            null,
+			},
+		},
+		"vault_aws_secret_backend_role.role": {
+			"address":        "vault_aws_secret_backend_role.role",
+			"depends_on":     [],
+			"deposed_key":    "",
+			"index":          null,
+			"mode":           "managed",
+			"module_address": "",
+			"name":           "role",
+			"provider_name":  "registry.terraform.io/hashicorp/vault",
+			"tainted":        false,
+			"type":           "vault_aws_secret_backend_role",
+			"values": {
+				"backend":                  "aws",
+				"credential_type":          "iam_user",
+				"external_id":              null,
+				"iam_groups":               null,
+				"iam_tags":                 null,
+				"name":                     "deploy",
+				"namespace":                null,
+				"permissions_boundary_arn": null,
+				"policy_arns":              null,
+				"policy_document":          "{\n  \"Version\": \"2012-10-17\",\n  \"Statement\": [\n    {\n      \"Effect\": \"Allow\",\n      \"Action\": \"iam:*\",\n      \"Resource\": \"*\"\n    }\n  ]\n}\n",
+				"role_arns":                null,
+				"session_tags":             null,
+				"user_path":                null,
+			},
+		},
+	},
+}
+
+variables = {}
+
+resource_changes = {
+	"vault_aws_secret_backend.aws": {
+		"address": "vault_aws_secret_backend.aws",
+		"change": {
+			"actions": [
+				"create",
+			],
+			"after": {
+				"access_key":              "REDACTED_SENSITIVE",
+				"description":             null,
+				"disable_remount":         false,
+				"iam_endpoint":            null,
+				"identity_token_audience": null,
+				"identity_token_key":      null,
+				"local":                   false,
+				"namespace":               null,
+				"path":                    "aws",
+				"role_arn":                null,
+				"secret_key":              "REDACTED_SENSITIVE",
+				"sts_endpoint":            null,
+			},
+			"after_unknown": {
+				"default_lease_ttl_seconds": true,
+				"id":                    true,
+				"identity_token_ttl":    true,
+				"max_lease_ttl_seconds": true,
+				"region":                true,
+				"username_template":     true,
+			},
+			"before": null,
+		},
+		"deposed":        "",
+		"index":          null,
+		"mode":           "managed",
+		"module_address": "",
+		"name":           "aws",
+		"provider_name":  "registry.terraform.io/hashicorp/vault",
+		"type":           "vault_aws_secret_backend",
+	},
+	"vault_aws_secret_backend_role.role": {
+		"address": "vault_aws_secret_backend_role.role",
+		"change": {
+			"actions": [
+				"create",
+			],
+			"after": {
+				"backend":                  "aws",
+				"credential_type":          "iam_user",
+				"external_id":              null,
+				"iam_groups":               null,
+				"iam_tags":                 null,
+				"name":                     "deploy",
+				"namespace":                null,
+				"permissions_boundary_arn": null,
+				"policy_arns":              null,
+				"policy_document":          "{\n  \"Version\": \"2012-10-17\",\n  \"Statement\": [\n    {\n      \"Effect\": \"Allow\",\n      \"Action\": \"iam:*\",\n      \"Resource\": \"*\"\n    }\n  ]\n}\n",
+				"role_arns":                null,
+				"session_tags":             null,
+				"user_path":                null,
+			},
+			"after_unknown": {
+				"default_sts_ttl": true,
+				"id":              true,
+				"max_sts_ttl":     true,
+			},
+			"before": null,
+		},
+		"deposed":        "",
+		"index":          null,
+		"mode":           "managed",
+		"module_address": "",
+		"name":           "role",
+		"provider_name":  "registry.terraform.io/hashicorp/vault",
+		"type":           "vault_aws_secret_backend_role",
+	},
+}
+
+resource_drift = {}
+
+output_changes = {}
+
+raw = {
+	"configuration": {
+		"provider_config": {
+			"vault": {
+				"full_name":          "registry.terraform.io/hashicorp/vault",
+				"name":               "vault",
+				"version_constraint": "~> 4.0",
+			},
+		},
+		"root_module": {
+			"resources": [
+				{
+					"address": "vault_aws_secret_backend.aws",
+					"expressions": {
+						"access_key": {
+							"constant_value": "AKIA.....",
+						},
+						"secret_key": {
+							"constant_value": "AWS secret key",
+						},
+					},
+					"mode":                "managed",
+					"name":                "aws",
+					"provider_config_key": "vault",
+					"schema_version":      1,
+					"type":                "vault_aws_secret_backend",
+				},
+				{
+					"address": "vault_aws_secret_backend_role.role",
+					"expressions": {
+						"backend": {
+							"references": [
+								"vault_aws_secret_backend.aws.path",
+								"vault_aws_secret_backend.aws",
+							],
+						},
+						"credential_type": {
+							"constant_value": "iam_user",
+						},
+						"name": {
+							"constant_value": "deploy",
+						},
+						"policy_document": {
+							"constant_value": "{\n  \"Version\": \"2012-10-17\",\n  \"Statement\": [\n    {\n      \"Effect\": \"Allow\",\n      \"Action\": \"iam:*\",\n      \"Resource\": \"*\"\n    }\n  ]\n}\n",
+						},
+					},
+					"mode":                "managed",
+					"name":                "role",
+					"provider_config_key": "vault",
+					"schema_version":      0,
+					"type":                "vault_aws_secret_backend_role",
+				},
+			],
+		},
+	},
+	"format_version": "1.2",
+	"planned_values": {
+		"root_module": {
+			"resources": [
+				{
+					"address":        "vault_aws_secret_backend.aws",
+					"mode":           "managed",
+					"name":           "aws",
+					"provider_name":  "registry.terraform.io/hashicorp/vault",
+					"schema_version": 1,
+					"sensitive_values": {
+						"access_key": true,
+						"secret_key": true,
+					},
+					"type": "vault_aws_secret_backend",
+					"values": {
+						"access_key":              "REDACTED_SENSITIVE",
+						"description":             null,
+						"disable_remount":         false,
+						"iam_endpoint":            null,
+						"identity_token_audience": null,
+						"identity_token_key":      null,
+						"local":                   false,
+						"namespace":               null,
+						"path":                    "aws",
+						"role_arn":                null,
+						"secret_key":              "REDACTED_SENSITIVE",
+						"sts_endpoint":            null,
+					},
+				},
+				{
+					"address":          "vault_aws_secret_backend_role.role",
+					"mode":             "managed",
+					"name":             "role",
+					"provider_name":    "registry.terraform.io/hashicorp/vault",
+					"schema_version":   0,
+					"sensitive_values": {},
+					"type":             "vault_aws_secret_backend_role",
+					"values": {
+						"backend":                  "aws",
+						"credential_type":          "iam_user",
+						"external_id":              null,
+						"iam_groups":               null,
+						"iam_tags":                 null,
+						"name":                     "deploy",
+						"namespace":                null,
+						"permissions_boundary_arn": null,
+						"policy_arns":              null,
+						"policy_document":          "{\n  \"Version\": \"2012-10-17\",\n  \"Statement\": [\n    {\n      \"Effect\": \"Allow\",\n      \"Action\": \"iam:*\",\n      \"Resource\": \"*\"\n    }\n  ]\n}\n",
+						"role_arns":                null,
+						"session_tags":             null,
+						"user_path":                null,
+					},
+				},
+			],
+		},
+	},
+	"relevant_attributes": [
+		{
+			"attribute": [
+				"path",
+			],
+			"resource": "vault_aws_secret_backend.aws",
+		},
+	],
+	"resource_changes": [
+		{
+			"address": "vault_aws_secret_backend.aws",
+			"change": {
+				"actions": [
+					"create",
+				],
+				"after": {
+					"access_key":              "REDACTED_SENSITIVE",
+					"description":             null,
+					"disable_remount":         false,
+					"iam_endpoint":            null,
+					"identity_token_audience": null,
+					"identity_token_key":      null,
+					"local":                   false,
+					"namespace":               null,
+					"path":                    "aws",
+					"role_arn":                null,
+					"secret_key":              "REDACTED_SENSITIVE",
+					"sts_endpoint":            null,
+				},
+				"after_sensitive": {
+					"access_key": true,
+					"secret_key": true,
+				},
+				"after_unknown": {
+					"default_lease_ttl_seconds": true,
+					"id":                    true,
+					"identity_token_ttl":    true,
+					"max_lease_ttl_seconds": true,
+					"region":                true,
+					"username_template":     true,
+				},
+				"before":           null,
+				"before_sensitive": false,
+			},
+			"mode":          "managed",
+			"name":          "aws",
+			"provider_name": "registry.terraform.io/hashicorp/vault",
+			"type":          "vault_aws_secret_backend",
+		},
+		{
+			"address": "vault_aws_secret_backend_role.role",
+			"change": {
+				"actions": [
+					"create",
+				],
+				"after": {
+					"backend":                  "aws",
+					"credential_type":          "iam_user",
+					"external_id":              null,
+					"iam_groups":               null,
+					"iam_tags":                 null,
+					"name":                     "deploy",
+					"namespace":                null,
+					"permissions_boundary_arn": null,
+					"policy_arns":              null,
+					"policy_document":          "{\n  \"Version\": \"2012-10-17\",\n  \"Statement\": [\n    {\n      \"Effect\": \"Allow\",\n      \"Action\": \"iam:*\",\n      \"Resource\": \"*\"\n    }\n  ]\n}\n",
+					"role_arns":                null,
+					"session_tags":             null,
+					"user_path":                null,
+				},
+				"after_sensitive": {},
+				"after_unknown": {
+					"default_sts_ttl": true,
+					"id":              true,
+					"max_sts_ttl":     true,
+				},
+				"before":           null,
+				"before_sensitive": false,
+			},
+			"mode":          "managed",
+			"name":          "role",
+			"provider_name": "registry.terraform.io/hashicorp/vault",
+			"type":          "vault_aws_secret_backend_role",
+		},
+	],
+	"terraform_version": "1.9.5",
+	"timestamp":         "2024-09-05T04:55:38Z",
+}
