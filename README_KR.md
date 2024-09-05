@@ -1,6 +1,6 @@
 # AWS Secrets Role Type Check
 
-## 1. Create a policy for EGP egp_iam_user_deny.sentinel
+## 1. EGP용 정책 생성 egp_iam_user_deny.sentinel
 
 ```hcl
 import "strings"
@@ -26,12 +26,11 @@ main = rule when precond {
 }
 ```
 
-- precond : If the API request is POST, UPDATE
-- role_type_check : Ensure the value of credential_type in the request's Body is an allowed type (e.g. allow federation_token)
+- precond : API 요청이 POST, UPDATE 인 경우
+- role_type_check : 요청의 Body에 credential_type의 값이 허용된 type 인지 확인 (e.g. federation_token 허용)
 
-## 2. Setting up sentinel policies in EGP
-
-> EGP enforces the policy for the specified path
+## 2. EGP에 정책 설정
+EGP는 지정된 path에 대해 정책을 적용
 
 ```bash
 vault write /sys/policies/egp/iam_user_deny \
@@ -40,11 +39,11 @@ vault write /sys/policies/egp/iam_user_deny \
   paths="aws/roles/*"
 ```
 
-- Act when a request is made to the API path specified by paths
+- paths로 지정된 API 경로에 요청이 들어오면 동작
 
-## 3. TEST
+## 3. 테스트
 
-Path specified as EGP, rejected because credential_type is not an allowed type if iam_user
+EGP로 지정된 path로 credential_type 이 iam_user 인경우 허용된 타입이 아니므로 거부됨
 
 ```bash
 vault write aws/roles/iam-role \
@@ -63,7 +62,7 @@ vault write aws/roles/iam-role \
 EOF
 ```
 
-Output error messages
+에러 메시지 출력
 
 ```log
 Error writing data to aws/roles/iam-role: Error making API request.
@@ -94,7 +93,7 @@ Rule "role_type_check" (root/iam_user_deny:9:1) = false
 	* permission denied
 ```
 
-The federation_token is generated.
+federation_token은 생성됩니다.
 
 ```basg
 vault write aws/roles/sts-role \
