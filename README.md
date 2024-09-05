@@ -1,118 +1,63 @@
 # AWS Secrets Role Type Check
 
-## 1. Create a policy for EGP egp_iam_user_deny.sentinel
+> Here's what Sentinel looks like in Vault
+>
+> [Vault - transit_exportable_deny](https://github.com/Great-Stone/policy-library-vault-aws-secret-type/blob/main/docs/policies/aws_secret_role_type_check.md)
+
+## 1. Terraform Sample
+
+[main.tf](https://github.com/Great-Stone/policy-library-vault-aws-secret-type/blob/main/policies/terraform/main.tf)
 
 ```hcl
-import "strings"
+resource "vault_aws_secret_backend_role" "role" {
+  backend         = vault_aws_secret_backend.aws.path
+  name            = "deploy"
+  credential_type = "iam_user"
 
-# print(request.data)
-credential_type = request.data.credential_type
-print("CREDENTIAL_TYPE: ", credential_type)
+  policy_document = <<EOT
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": "iam:*",
+      "Resource": "*"
+    }
+  ]
+}
+EOT
+}
+```
+
+- credential_type : Sentinel validates the available types.
+
+## 2. Policy
+
+```hcl
+import "tfplan-functions" as plan
+
+aws_secret_roles = plan.find_resources("vault_aws_secret_backend_role")
 
 allow_role_type = ["federation_token"]
 
-role_type_check = rule {
-  credential_type in allow_role_type
+# (KR) AWS Secret Role 타입 지정에 오류가 있습니다.
+# (EN) There was an error specifying the AWS Secret Role type.
+credential_type_check = rule {
+    all aws_secret_roles as _, rc {
+      print("Allowed role type list is ", allow_role_type) and
+      print("Current role type is ", rc.change.after.credential_type) and
+      (rc.change.after.credential_type in allow_role_type)
+    }
 }
 
-# Only check AWS Secret Engine
-# Only check create, update
-precond = rule {
-	request.operation in ["create", "update"]
-}
-
-main = rule when precond {
-    role_type_check
+# Check aws role type
+main = rule {
+  credential_type_check
 }
 ```
 
-- precond : If the API request is POST, UPDATE
-- role_type_check : Ensure the value of credential_type in the request's Body is an allowed type (e.g. allow federation_token)
-
-## 2. Setting up sentinel policies in EGP
-
-> EGP enforces the policy for the specified path
-
-```bash
-vault write /sys/policies/egp/iam_user_deny \
-  policy=@egp_iam_user_deny.sentinel \
-  enforcement_level=hard-mandatory \
-  paths="aws/roles/*"
-```
-
-- Act when a request is made to the API path specified by paths
+- credential_type_check : The value of `credential_type` for resources of any AWS role type must be in the list in `allow_role_type`.
 
 ## 3. TEST
 
-Path specified as EGP, rejected because credential_type is not an allowed type if iam_user
-
-```bash
-vault write aws/roles/iam-role \
-    credential_type=iam_user \
-    policy_document=-<<EOF
-{
-  "Version": "2012-10-17",
-  "Statement": [
-    {
-      "Effect": "Allow",
-      "Action": "ec2:*",
-      "Resource": "*"
-    }
-  ]
-}
-EOF
-```
-
-Output error messages
-
-```log
-Error writing data to aws/roles/iam-role: Error making API request.
-
-URL: PUT http://127.0.0.1:8200/v1/aws/roles/iam-role
-Code: 403. Errors:
-
-* 2 errors occurred:
-	* egp standard policy "root/iam_user_deny" evaluation resulted in denial.
-
-The specific error was:
-<nil>
-
-A trace of the execution for policy "root/iam_user_deny" is available:
-
-Result: false
-
-Description: <none>
-
-print() output:
-
-CREDENTIAL_TYPE:  iam_user
-
-
-Rule "main" (root/iam_user_deny:19:1) = false
-Rule "precond" (root/iam_user_deny:15:1) = true
-Rule "role_type_check" (root/iam_user_deny:9:1) = false
-	* permission denied
-```
-
-The federation_token is generated.
-
-```bash
-vault write aws/roles/sts-role \
-    credential_type=federation_token \
-    policy_document=-<<EOF
-{
-  "Version": "2012-10-17",
-  "Statement": [
-    {
-      "Effect": "Allow",
-      "Action": "ec2:*",
-      "Resource": "*"
-    }
-  ]
-}
-EOF
-```
-
-```log
-Success! Data written to: aws/roles/sts-role
-```
+![](https://github.com/Great-Stone/policy-library-vault-aws-secret-type/blob/main/images/aws_secret_role_type_check.png?raw=true)
